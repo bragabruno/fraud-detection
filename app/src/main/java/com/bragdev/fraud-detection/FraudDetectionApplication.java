@@ -11,7 +11,7 @@ import static com.bragdev.app.MessageUtils.getMessage;
 
 import org.apache.commons.text.WordUtils;
 
-public class FraudDetection {
+public class FraudDetectionApplication {
   public static void main(String[] args) {
     LinkedList tokens;
     tokens = split(getMessage());
