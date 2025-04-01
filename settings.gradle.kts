@@ -11,4 +11,4 @@ plugins {
 }
 
 rootProject.name = "fraud-detection"
-include("app", "list", "utilities")
+include("fraud-detection", "list", "utilities")
