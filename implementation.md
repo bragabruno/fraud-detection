@@ -1,6 +1,8 @@
 # Implementing Your Fraud Detection System: Step-by-Step Guide
 
-Based on the architecture outlined in the README.md, here's how you can implement this fraud detection system yourself:
+Based on the architecture outlined in the [README.md](README.md), here's how you can implement this fraud detection system yourself:
+
+This guide walks you through the step-by-step process of building a complete fraud detection system. Following the architectural principles and components described in the README, we'll implement each layer of the system - from data ingestion to decision making and analysis tools.
 
 ## Phase 1: Project Setup and Core Infrastructure
 
