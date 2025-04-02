@@ -7,6 +7,7 @@ The system will be a robust, scalable financial transaction fraud detection plat
 ## 2. High-Level Architecture
 
 ```mermaid
+%%{init: {"theme": "dark", "background": "dark"}}%%
 flowchart TD
  subgraph "Data Sources"
  CBS[Core Banking Systems] --> KQ[Kafka Queue]
@@ -118,6 +119,118 @@ flowchart TD
 ## 4. Data Flow Architecture
 
 ```mermaid
+%%{init: {"theme": "dark", "background": "dark"}}%%
+flowchart TD
+ subgraph "Data Sources"
+ CBS[Core Banking Systems] --> KQ[Kafka Queue]
+ CP[Customer Profiles] --> KQ
+ TPD[Third-Party Data] --> KQ
+ end
+
+ subgraph "Ingestion Layer"
+ KQ --> ST[Stream Processing]
+ KQ --> BT[Batch Processing]
+ end
+ 
+ subgraph "Processing Layer"
+ ST --> RT[Real-time Analysis]
+ BT --> BA[Batch Analysis]
+ 
+ subgraph "Detection Engine"
+  RT --> RB[Rule-Based Engine]
+  RT --> SM[Statistical Models]
+  RT --> ML[Machine Learning]
+  RT --> NA[Network Analysis]
+  
+  BA --> HT[Historical Trends]
+  BA --> FP[Fraud Patterns]
+  BA --> MM[Model Management]
+ end
+ end
+ 
+ subgraph "Decision Layer"
+ RB --> DM[Decision Manager]
+ SM --> DM
+ ML --> DM
+ NA --> DM
+ HT --> DM
+ FP --> DM
+ 
+ DM --> CMS[Case Management]
+ DM --> A[Alerts]
+ DM --> RA[Risk Assessment]
+ end
+ 
+ subgraph "Integration Layer"
+ CMS --> API[API Gateway]
+ A --> API
+ RA --> API
+ 
+ API --> BS[Banking Systems]
+ API --> FM[Fraud Management UI]
+ API --> RP[Reporting Platform]
+ end
+ 
+ subgraph "Support Systems"
+ TS[Training System]
+ AUD[Audit System]
+ MON[Monitoring]
+ end
+```
+
+## 3. Architecture Components
+
+### 3.1 Data Ingestion Layer
+
+- **Kafka-based Message Queue**: High-throughput distributed messaging system to handle millions of transactions
+- **Stream Processing Engine**: For real-time transaction processing (Apache Kafka Streams or Apache Flink)
+- **Batch Processing System**: For processing historical data and model training (Apache Spark)
+- **API Connectors**: To integrate with core banking systems and third-party data providers
+
+### 3.2 Detection Engine
+
+- **Rule-Based Engine**:
+  - Configurable rules with thresholds for quick, deterministic fraud checks
+  - Rules management system for business users to modify rules without code changes
+  
+- **Statistical Models**:
+  - Anomaly detection based on statistical methods
+  - Customer profiling and behavioral analytics
+  
+- **Machine Learning Components**:
+  - Supervised ML for known fraud patterns
+  - Unsupervised ML for anomaly detection
+  - Deep learning for complex pattern recognition
+  - Feature engineering pipeline
+  
+- **Network Analysis**:
+  - Graph database for relationship mapping
+  - Algorithms to detect fraud rings and collusion
+  - Link analysis visualization
+
+### 3.3 Decision Layer
+
+- **Scoring Engine**: To combine outputs from different detection methods
+- **Case Management System**: For fraud analysts to review and resolve alerts
+- **Alert Management**: Prioritization and routing of alerts
+- **Workflow Engine**: To manage the investigation process
+
+### 3.4 Integration & Presentation Layer
+
+- **API Gateway**: RESTful APIs for integration with other systems
+- **Admin Dashboard**: For configuration and monitoring
+- **Analyst Workbench**: UI for fraud investigation
+- **Reporting System**: For compliance and business intelligence
+
+### 3.5 Support Systems
+
+- **Model Training Pipeline**: For continuous model improvement
+- **Audit System**: For compliance with regulations
+- **Monitoring & Alerting**: For system health and performance
+
+## 4. Data Flow Architecture
+
+```
 sequenceDiagram
     participant CBS as Core Banking System
     participant ING as Ingestion Layer
