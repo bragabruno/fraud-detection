@@ -7,14 +7,52 @@ The system will be a robust, scalable financial transaction fraud detection plat
 ## 2. High-Level Architecture
 
 ```mermaid
-%%{init: {"theme": "dark", "background": "dark"}}%%
+---
+ init:
+  theme: dark,
+  background: #121212,
+  themeVariables:
+    primaryColor: #333333,
+    primaryTextColor: #dddddd,
+    primaryBorderColor: #444444,
+    lineColor: #999999,
+    secondaryColor: #222222,
+    tertiaryColor: #191919,
+    fontFamily: Arial,
+    mainBkg: #333333,
+    nodeBorder: #666666,
+    clusterBkg: #222222,
+    clusterBorder: #444444,
+    textColor: #dddddd,
+    fontSize: 16px,
+    titleColor: #dddddd,
+    edgeLabelBackground: #333333,
+    nodeTextColor: #dddddd,
+    noteBorderColor: #555555,
+    noteBkgColor: #333333,
+    fillColor: #333333,
+    altBackground: #222222,
+    secondBkg: #222222,
+    backgroundColor: #121212,
+    requirementBackground: #222222,
+    subGraphBackground: #222222
+  flowchart:
+    curve: basis,
+    useMaxWidth: false,
+    htmlLabels: true,
+    diagramPadding: 8
+  look: default,
+  layout: dagre
+---
 flowchart TD
+ classDef subgraphStyle fill:#222222,stroke:#444444,color:#dddddd
+ 
  subgraph "Data Sources"
  CBS[Core Banking Systems] --> KQ[Kafka Queue]
  CP[Customer Profiles] --> KQ
  TPD[Third-Party Data] --> KQ
  end
-
+ 
  subgraph "Ingestion Layer"
  KQ --> ST[Stream Processing]
  KQ --> BT[Batch Processing]
@@ -30,9 +68,9 @@ flowchart TD
   RT --> ML[Machine Learning]
   RT --> NA[Network Analysis]
   
-  BA --> HT[Historical Trends]
-  BA --> FP[Fraud Patterns]
-  BA --> MM[Model Management]
+  BA --> HT[Historical Trends Analysis]
+  BA --> FP[Fraud Pattern Detection]
+  BA --> MM[Model Management System]
  end
  end
  
@@ -64,6 +102,14 @@ flowchart TD
  AUD[Audit System]
  MON[Monitoring]
  end
+ 
+ class Data Sources; subgraphStyle
+ class Ingestion Layer; subgraphStyle
+ class Processing Layer; subgraphStyle
+ class Detection Engine; subgraphStyle
+ class Decision Layer; subgraphStyle
+ class Integration Layer; subgraphStyle
+ class Support Systems; subgraphStyle
 ```
 
 ## 3. Architecture Components
@@ -119,14 +165,52 @@ flowchart TD
 ## 4. Data Flow Architecture
 
 ```mermaid
-%%{init: {"theme": "dark", "background": "dark"}}%%
+---
+ init:
+  theme: dark,
+  background: #121212,
+  themeVariables:
+    primaryColor: #333333,
+    primaryTextColor: #dddddd,
+    primaryBorderColor: #444444,
+    lineColor: #999999,
+    secondaryColor: #222222,
+    tertiaryColor: #191919,
+    fontFamily: Arial,
+    mainBkg: #333333,
+    nodeBorder: #666666,
+    clusterBkg: #222222,
+    clusterBorder: #444444,
+    textColor: #dddddd,
+    fontSize: 16px,
+    titleColor: #dddddd,
+    edgeLabelBackground: #333333,
+    nodeTextColor: #dddddd,
+    noteBorderColor: #555555,
+    noteBkgColor: #333333,
+    fillColor: #333333,
+    altBackground: #222222,
+    secondBkg: #222222,
+    backgroundColor: #121212,
+    requirementBackground: #222222,
+    subGraphBackground: #222222
+  flowchart:
+    curve: basis,
+    useMaxWidth: false,
+    htmlLabels: true,
+    diagramPadding: 8
+  look: default,
+  layout: dagre
+---
 flowchart TD
+ classDef subgraphStyle fill:#222222,stroke:#444444,color:#dddddd
+ 
  subgraph "Data Sources"
  CBS[Core Banking Systems] --> KQ[Kafka Queue]
  CP[Customer Profiles] --> KQ
  TPD[Third-Party Data] --> KQ
  end
-
+ 
  subgraph "Ingestion Layer"
  KQ --> ST[Stream Processing]
  KQ --> BT[Batch Processing]
@@ -142,9 +226,9 @@ flowchart TD
   RT --> ML[Machine Learning]
   RT --> NA[Network Analysis]
   
-  BA --> HT[Historical Trends]
-  BA --> FP[Fraud Patterns]
-  BA --> MM[Model Management]
+  BA --> HT[Historical Trends Analysis]
+  BA --> FP[Fraud Pattern Detection]
+  BA --> MM[Model Management System]
  end
  end
  
@@ -176,6 +260,14 @@ flowchart TD
  AUD[Audit System]
  MON[Monitoring]
  end
+ 
+ class Data Sources subgraphStyle
+ class Ingestion Layer subgraphStyle
+ class Processing Layer subgraphStyle
+ class Detection Engine subgraphStyle
+ class Decision Layer subgraphStyle
+ class Integration Layer subgraphStyle
+ class Support Systems subgraphStyle
 ```
 
 ## 3. Architecture Components
@@ -230,7 +322,52 @@ flowchart TD
 
 ## 4. Data Flow Architecture
 
-```
+```mermaid
+init: 
+  "theme": "dark",
+  "background": "#121212",
+  "themeVariables": {
+    "primaryColor": "#333333",
+    "primaryTextColor": "#dddddd",
+    "primaryBorderColor": "#444444",
+    "lineColor": "#999999",
+    "secondaryColor": "#222222",
+    "tertiaryColor": "#191919",
+    "fontFamily": "Arial",
+    "mainBkg": "#333333",
+    "actorBkg": "#333333",
+    "actorBorder": "#666666",
+    "actorTextColor": "#dddddd",
+    "actorLineColor": "#999999",
+    "signalColor": "#999999",
+    "signalTextColor": "#dddddd",
+    "labelBoxBkgColor": "#333333",
+    "labelBoxBorderColor": "#555555",
+    "labelTextColor": "#dddddd",
+    "loopTextColor": "#dddddd",
+    "noteBorderColor": "#555555",
+    "noteBkgColor": "#333333",
+    "noteTextColor": "#dddddd",
+    "activationBorderColor": "#666666",
+    "activationBkgColor": "#444444",
+    "sequenceNumberColor": "#dddddd",
+    "fillColor": "#333333",
+    "altBackground": "#222222",
+    "secondBkg": "#222222",
+    "backgroundColor": "#121212",
+    "errorBkgColor": "#222222",
+    "errorTextColor": "#dddddd"
+  },
+  "sequence": {
+    "diagramMarginX": 50,
+    "diagramMarginY": 10,
+    "boxTextMargin": 5,
+    "noteMargin": 10,
+    "messageMargin": 35
+  },
+  "look": "handDrawn",
+  "layout": "dagre"
+}}%%
 sequenceDiagram
     participant CBS as Core Banking System
     participant ING as Ingestion Layer
