@@ -1,0 +1,120 @@
+{
+  "mcpServers": {
+    "mcp-installer": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@anaisbetts/mcp-installer"
+      ]
+    },
+    "mcp-obsidian": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "mcp-obsidian",
+        "/Users/brunobraga/Library/Mobile Documents/iCloud~md~obsidian/Documents/Obsidian Vault"
+      ]
+    },
+    "filesystem": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@modelcontextprotocol/server-filesystem",
+        "/Users/brunobraga/"
+      ]
+    },
+    "github": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@modelcontextprotocol/server-github"
+      ],
+      "env": {
+        "GITHUB_PERSONAL_ACCESS_TOKEN": "GITHUB_PERSONAL_ACCESS_TOKEN"
+      }
+    },
+    "postgres": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@modelcontextprotocol/server-postgres",
+        "postgresql://claude_user:T5+K+5iF3tTKLf6!op0ddXGaAmVS^tem@localhost:5432/claude_db"
+      ]
+    },
+    "sequential-thinking": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@modelcontextprotocol/server-sequential-thinking"
+      ]
+    },
+    "memory": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@modelcontextprotocol/server-memory"
+      ]
+    },
+    "git": {
+      "command": "uvx",
+      "args": [
+        "mcp-server-git",
+        "--repository",
+        "/Users/brunobraga/Developer/dev/Vest-Social/vest-app",
+        "--repository",
+        "/Users/brunobraga/Developer/dev/Vest-Social/vest-backend-api",
+        "--repository",
+        "/Users/brunobraga/Developer/dev/Vest-Social/vest-cloud"
+      ]
+    },
+    "slack": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@modelcontextprotocol/server-slack"
+      ],
+      "env": {
+        "SLACK_BOT_TOKEN": "xoxb-3876067403076-8185354233393-vuSu2QVd4yiDb0XW1bpJE9jo",
+        "SLACK_TEAM_ID": "T03RS1ZBV28"
+      }
+    },
+    "brave-search": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@modelcontextprotocol/server-brave-search"
+      ],
+      "env": {
+        "BRAVE_API_KEY": "BSAPTzlvw0sYrRZ-sf3nk2CjVjXrCXS"
+      }
+    },
+    "exa": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "exa-mcp-server"
+      ],
+      "env": {
+        "EXA_API_KEY": "c3c0c1fb-2c65-49cd-95f7-5502925e4330"
+      }
+    },
+    "@mcp-get-community-server-macos": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@mcp-get-community/server-macos",
+        "/Users/brunobraga"
+      ]
+    },
+    "mcp-transform-paths": {
+      "command": "uvx",
+      "args": [
+        "@anthropic-ai/mcp-transform-paths",
+        "--path",
+        "/Users/brunobraga/Developer/dev/fraud-detection/app/src/main/java/com/bragdev/fraud-detection",
+        "--replace-hyphen",
+        "underscore"
+      ]
+    }
+  }
+}

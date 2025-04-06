@@ -1,0 +1,91 @@
+version: '3.8'
+
+services:
+  # Fraud Detection Application
+  fraud-detection-app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: fraud-detection-app
+    ports:
+      - "${SERVER_PORT:-8080}:8080"
+    environment:
+      # Database Configuration
+      SPRING_DATASOURCE_URL: ${SPRING_DATASOURCE_URL}
+      SPRING_DATASOURCE_USERNAME: ${SPRING_DATASOURCE_USERNAME}
+      SPRING_DATASOURCE_PASSWORD: ${SPRING_DATASOURCE_PASSWORD}
+      SPRING_DATASOURCE_DRIVER_CLASS_NAME: ${SPRING_DATASOURCE_DRIVER_CLASS_NAME}
+      SPRING_JPA_DATABASE_PLATFORM: ${SPRING_JPA_DATABASE_PLATFORM}
+      SPRING_JPA_HIBERNATE_DDL_AUTO: ${SPRING_JPA_HIBERNATE_DDL_AUTO}
+      SPRING_JPA_SHOW_SQL: ${SPRING_JPA_SHOW_SQL}
+      
+      # Application Settings
+      SPRING_APPLICATION_NAME: ${SPRING_APPLICATION_NAME}
+      LOGGING_LEVEL_ROOT: ${LOGGING_LEVEL_ROOT}
+      LOGGING_LEVEL_COM_BRAGDEV_FRAUD: ${LOGGING_LEVEL_COM_BRAGDEV_FRAUD}
+      
+      # Plaid API Configuration
+      PLAID_CLIENT_ID: ${PLAID_CLIENT_ID}
+      PLAID_SECRET: ${PLAID_SECRET}
+      PLAID_ENVIRONMENT: ${PLAID_ENVIRONMENT}
+      PLAID_CLIENT_NAME: ${PLAID_CLIENT_NAME}
+      PLAID_COUNTRY_CODES: ${PLAID_COUNTRY_CODES}
+      PLAID_LANGUAGE: ${PLAID_LANGUAGE}
+      PLAID_REDIRECT_URI: ${PLAID_REDIRECT_URI}
+      
+      # Fraud Detection Rule Configuration
+      DETECTION_RULE_GEOGRAPHIC_REFERENCE_LOCATION_LATITUDE: ${DETECTION_RULE_GEOGRAPHIC_REFERENCE_LOCATION_LATITUDE}
+      DETECTION_RULE_GEOGRAPHIC_REFERENCE_LOCATION_LONGITUDE: ${DETECTION_RULE_GEOGRAPHIC_REFERENCE_LOCATION_LONGITUDE}
+      DETECTION_RULE_GEOGRAPHIC_DISTANCE_THRESHOLD_KM: ${DETECTION_RULE_GEOGRAPHIC_DISTANCE_THRESHOLD_KM}
+      DETECTION_RULE_VELOCITY_TIME_WINDOW_SECONDS: ${DETECTION_RULE_VELOCITY_TIME_WINDOW_SECONDS}
+      DETECTION_RULE_VELOCITY_MAX_TRANSACTIONS: ${DETECTION_RULE_VELOCITY_MAX_TRANSACTIONS}
+      
+      # Decision Manager Configuration
+      DECISION_RISK_THRESHOLD_LOW: ${DECISION_RISK_THRESHOLD_LOW}
+      DECISION_RISK_THRESHOLD_MEDIUM: ${DECISION_RISK_THRESHOLD_MEDIUM}
+      DECISION_RISK_THRESHOLD_HIGH: ${DECISION_RISK_THRESHOLD_HIGH}
+      DECISION_METHOD_WEIGHTS_RULE_ENGINE: ${DECISION_METHOD_WEIGHTS_RULE_ENGINE}
+      DECISION_METHOD_WEIGHTS_STATISTICAL: ${DECISION_METHOD_WEIGHTS_STATISTICAL}
+      DECISION_METHOD_WEIGHTS_MACHINE_LEARNING: ${DECISION_METHOD_WEIGHTS_MACHINE_LEARNING}
+      DECISION_METHOD_WEIGHTS_NETWORK_ANALYSIS: ${DECISION_METHOD_WEIGHTS_NETWORK_ANALYSIS}
+      
+      # Integration Services
+      SLACK_BOT_TOKEN: ${SLACK_BOT_TOKEN}
+    depends_on:
+      - postgres-db
+    networks:
+      - fraud-detection-network
+    volumes:
+      - app-logs:/app/logs
+    restart: unless-stopped
+
+  # PostgreSQL Database (for production environments)
+  postgres-db:
+    image: postgres:14-alpine
+    container_name: fraud-detection-db
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_DB: frauddb
+      POSTGRES_USER: ${SPRING_DATASOURCE_USERNAME}
+      POSTGRES_PASSWORD: ${SPRING_DATASOURCE_PASSWORD}
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    networks:
+      - fraud-detection-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${SPRING_DATASOURCE_USERNAME} -d frauddb"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+networks:
+  fraud-detection-network:
+    driver: bridge
+
+volumes:
+  postgres-data:
+    driver: local
+  app-logs:
+    driver: local
