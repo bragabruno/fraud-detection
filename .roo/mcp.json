@@ -73,10 +73,7 @@
         "-y",
         "@modelcontextprotocol/server-slack"
       ],
-      "env": {
-        "SLACK_BOT_TOKEN": "xoxb-3876067403076-8185354233393-vuSu2QVd4yiDb0XW1bpJE9jo",
-        "SLACK_TEAM_ID": "T03RS1ZBV28"
-      }
+      "env": {}
     },
     "brave-search": {
       "command": "npx",
