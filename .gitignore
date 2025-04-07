@@ -77,6 +77,11 @@ yarn-error.log*
 
 # Misc
 HELP.md
+
+# Environment Files
+.env
+.env.*
+!.env.example
 target/
 .apt_generated
 .apt_generated_test
