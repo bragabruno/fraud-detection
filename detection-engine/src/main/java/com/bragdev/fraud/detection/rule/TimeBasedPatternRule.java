@@ -8,6 +8,7 @@ import java.time.ZonedDateTime;
 import java.util.Set;
 
 import com.bragdev.fraud.core.model.Transaction;
+import com.bragdev.fraud.core.model.TriggeredRule;
 import com.bragdev.fraud.core.rule.Rule;
 
 /**
@@ -98,8 +99,11 @@ public class TimeBasedPatternRule implements Rule {
         }
         
         try {
-            // Use the Lombok-generated getter for timestamp field
-            Instant timestamp = transaction.getTimestamp();
+            // Use reflection to safely access the timestamp field
+            java.lang.reflect.Field timestampField = Transaction.class.getDeclaredField("timestamp");
+            timestampField.setAccessible(true);
+            Instant timestamp = (Instant) timestampField.get(transaction);
+            
             if (timestamp == null) {
                 return false;
             }
@@ -132,13 +136,25 @@ public class TimeBasedPatternRule implements Rule {
     }
     
     @Override
+    public TriggeredRule createTriggeredRule(Transaction transaction) {
+        if (evaluate(transaction)) {
+            return TriggeredRule.create(getId(), getName(), getSeverity());
+        }
+        return null;
+    }
+    
+    @Override
     public String generateTriggerReason(Transaction transaction) {
         if (transaction == null) {
             return "Invalid transaction data";
         }
         
         try {
-            Instant timestamp = transaction.getTimestamp();
+            // Use reflection to safely access the timestamp field
+            java.lang.reflect.Field timestampField = Transaction.class.getDeclaredField("timestamp");
+            timestampField.setAccessible(true);
+            Instant timestamp = (Instant) timestampField.get(transaction);
+            
             if (timestamp == null) {
                 return "Transaction has no timestamp";
             }

@@ -10,11 +10,18 @@ pluginManagement {
         gradlePluginPortal()
         mavenCentral()
     }
-    plugins {
-        id("org.springframework.boot") version "3.2.2"
-        id("io.spring.dependency-management") version "1.1.4"
-        // Apply the foojay-resolver plugin to allow automatic download of JDKs
-        id("org.gradle.toolchains.foojay-resolver-convention") version "0.9.0"
+}
+
+dependencyResolutionManagement {
+    repositories {
+        mavenCentral()
+        gradlePluginPortal()
+        google()
+    }
+    versionCatalogs {
+        register("libs") {
+            from(files("gradle/libs.versions.toml"))
+        }
     }
 }
 

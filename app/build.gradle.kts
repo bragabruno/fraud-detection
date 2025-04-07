@@ -4,31 +4,34 @@
 
 plugins {
     id("buildlogic.java-application-conventions")
-    id("org.springframework.boot") version "3.2.4"
-    id("io.spring.dependency-management") version "1.1.4"
+    alias(libs.plugins.spring.boot)
+    alias(libs.plugins.spring.dependency.management)
 }
 
 group = "com.bragdev"
 version = "0.0.1-SNAPSHOT"
 
-java {
-    sourceCompatibility = JavaVersion.VERSION_17
-}
-
 dependencies {
     implementation(project(":core"))
     implementation(project(":utilities"))
-    implementation("org.apache.commons:commons-text")
-    implementation ("org.springframework.boot:spring-boot-starter-web")
-    implementation ("org.springframework.boot:spring-boot-starter-data-jpa")
-    implementation ("org.springframework.boot:spring-boot-starter-validation")
-    implementation ("org.springframework.boot:spring-boot-starter-security")
-    implementation ("org.springframework.boot:spring-boot-starter")
-    implementation ("org.projectlombok:lombok")
-    runtimeOnly ("org.postgresql:postgresql")
-    runtimeOnly ("com.h2database:h2")
-    annotationProcessor ("org.projectlombok:lombok")
-    testImplementation ("org.springframework.boot:spring-boot-starter-test")
+
+    // Spring Boot
+    implementation(libs.spring.boot.starter.web)
+    implementation(libs.spring.boot.starter.validation)
+    implementation(libs.spring.boot.starter.security)
+    implementation(libs.spring.boot.starter)
+    implementation(libs.spring.boot.starter.data.jpa)
+
+    // Lombok
+    implementation(libs.lombok)
+    annotationProcessor(libs.lombok)
+
+    // Database
+    runtimeOnly(libs.postgresql)
+    runtimeOnly(libs.h2)
+
+    // Testing
+    testImplementation(libs.spring.boot.starter.test)
 }
 
 application {

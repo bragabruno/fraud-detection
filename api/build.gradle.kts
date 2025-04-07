@@ -1,6 +1,5 @@
 plugins {
     id("buildlogic.java-library-conventions")
-    id("io.spring.dependency-management") version "1.1.4"
 }
 
 group = "com.bragdev.fraud"
@@ -11,29 +10,29 @@ dependencies {
     implementation(project(":decision"))
     
     // Spring Boot Web
-    implementation("org.springframework.boot:spring-boot-starter-web:3.2.4")
-    implementation("org.springframework.boot:spring-boot-starter-validation:3.2.4")
+    implementation(libs.spring.boot.starter.web)
+    implementation(libs.spring.boot.starter.validation)
     
     // API Documentation
-    implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.3.0")
+    implementation(libs.springdoc.openapi)
     
     // Security
-    implementation("org.springframework.boot:spring-boot-starter-security:3.2.4")
-    implementation("io.jsonwebtoken:jjwt-api:0.12.3")
-    runtimeOnly("io.jsonwebtoken:jjwt-impl:0.12.3")
-    runtimeOnly("io.jsonwebtoken:jjwt-jackson:0.12.3")
+    implementation(libs.spring.boot.starter.security)
+    implementation(libs.jjwt.api)
+    runtimeOnly(libs.jjwt.impl)
+    runtimeOnly(libs.jjwt.jackson)
     
     // Lombok
-    compileOnly("org.projectlombok:lombok:1.18.30")
-    annotationProcessor("org.projectlombok:lombok:1.18.30")
+    compileOnly(libs.lombok)
+    annotationProcessor(libs.lombok)
     
     // Testing
-    testCompileOnly("org.projectlombok:lombok:1.18.30")
-    testAnnotationProcessor("org.projectlombok:lombok:1.18.30")
-    testImplementation("org.junit.jupiter:junit-jupiter:5.11.3")
-    testImplementation("org.mockito:mockito-core:5.10.0")
-    testImplementation("org.springframework.boot:spring-boot-starter-test:3.2.4")
-    testImplementation("org.springframework.security:spring-security-test:6.2.1")
+    testCompileOnly(libs.lombok)
+    testAnnotationProcessor(libs.lombok)
+    testImplementation(libs.junit.jupiter)
+    testImplementation(libs.mockito.core)
+    testImplementation(libs.spring.boot.starter.test)
+    testImplementation(libs.spring.security.test)
 }
 
 tasks.withType<JavaCompile> {

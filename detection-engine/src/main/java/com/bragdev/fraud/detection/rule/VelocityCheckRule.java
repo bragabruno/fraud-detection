@@ -2,8 +2,12 @@ package com.bragdev.fraud.detection.rule;
 
 import java.time.Duration;
 import java.time.Instant;
+import java.util.Map;
+import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
 
 import com.bragdev.fraud.core.model.Transaction;
+import com.bragdev.fraud.core.model.TriggeredRule;
 import com.bragdev.fraud.core.rule.BaseRule;
 
 /**
@@ -16,10 +20,33 @@ public class VelocityCheckRule extends BaseRule {
     private final Duration timeWindow;
     private final int maxTransactionsInWindow;
     
-    // Store the last transaction time for each account
-    private Instant lastTransactionTime;
-    private int transactionCount;
-    private String currentAccountId;
+    // Inner class to hold account state information
+    private static class AccountState {
+        private volatile Instant lastTransactionTime;
+        private volatile int transactionCount;
+        
+        public AccountState() {
+            this.transactionCount = 0;
+            this.lastTransactionTime = Instant.MIN;
+        }
+        
+        public synchronized void incrementCount() {
+            this.transactionCount++;
+        }
+        
+        public synchronized void resetCount() {
+            this.transactionCount = 1;
+        }
+        
+        public synchronized void updateLastTransactionTime(Instant time) {
+            if (time != null && time.isAfter(this.lastTransactionTime)) {
+                this.lastTransactionTime = time;
+            }
+        }
+    }
+    
+    // Thread-safe map to store account state
+    private final ConcurrentHashMap<String, AccountState> accountStates = new ConcurrentHashMap<>();
     
     /**
      * Constructor for the velocity check rule
@@ -33,7 +60,7 @@ public class VelocityCheckRule extends BaseRule {
             "Transaction Velocity Check",
             "Detects rapid succession of transactions within a short time window",
             "VELOCITY",
-            80.0 // Severity set to 80 out of 100
+            80.0 // Severity
         );
         
         if (timeWindow == null || timeWindow.isNegative() || timeWindow.isZero()) {
@@ -46,10 +73,6 @@ public class VelocityCheckRule extends BaseRule {
         
         this.timeWindow = timeWindow;
         this.maxTransactionsInWindow = maxTransactionsInWindow;
-        
-        this.transactionCount = 0;
-        this.lastTransactionTime = Instant.MIN;
-        this.currentAccountId = "";
     }
     
     /**
@@ -57,42 +80,38 @@ public class VelocityCheckRule extends BaseRule {
      */
     @Override
     public boolean evaluate(Transaction transaction) {
-        if (transaction == null || transaction.getId() == null || 
-            transaction.getAccountId() == null || transaction.getTimestamp() == null) {
+        if (transaction == null) {
             return false;
         }
         
-        Instant transactionTime = transaction.getTimestamp();
+        // Use proper getters instead of reflection
+        UUID id = transaction.getId();
         String accountId = transaction.getAccountId();
+        Instant transactionTime = transaction.getTimestamp();
         
-        // If this is a new account, reset the counter
-        if (!accountId.equals(currentAccountId)) {
-            currentAccountId = accountId;
-            transactionCount = 1;
-            lastTransactionTime = transactionTime;
+        if (id == null || accountId == null || transactionTime == null) {
             return false;
         }
+        
+        // Get or create account state
+        AccountState state = accountStates.computeIfAbsent(accountId, k -> new AccountState());
         
         // Calculate if the transaction is within the time window
-        Duration timeSinceLastTransaction = Duration.between(lastTransactionTime, transactionTime);
+        Duration timeSinceLastTransaction = Duration.between(state.lastTransactionTime, transactionTime);
         
         // If outside the window, reset the counter
         if (timeSinceLastTransaction.compareTo(timeWindow) > 0) {
-            transactionCount = 1;
-            lastTransactionTime = transactionTime;
+            state.resetCount();
+            state.updateLastTransactionTime(transactionTime);
             return false;
         }
         
         // Increment the counter and update the last transaction time
-        transactionCount++;
-        
-        // Update the last transaction time if this transaction is more recent
-        if (transactionTime.isAfter(lastTransactionTime)) {
-            lastTransactionTime = transactionTime;
-        }
+        state.incrementCount();
+        state.updateLastTransactionTime(transactionTime);
         
         // Trigger the rule if the transaction count exceeds the threshold
-        return transactionCount > maxTransactionsInWindow;
+        return state.transactionCount > maxTransactionsInWindow;
     }
     
     @Override
@@ -101,12 +120,30 @@ public class VelocityCheckRule extends BaseRule {
             return "Invalid transaction data";
         }
         
+        String accountId = transaction.getAccountId();
+        if (accountId == null) {
+            return "Unknown account";
+        }
+        
+        AccountState state = accountStates.get(accountId);
+        if (state == null) {
+            return "No velocity data for account";
+        }
+        
         return String.format(
             "Account %s has performed %d transactions within %d seconds, exceeding the threshold of %d",
-            transaction.getAccountId(),
-            transactionCount,
+            accountId,
+            state.transactionCount,
             timeWindow.getSeconds(),
             maxTransactionsInWindow
         );
+    }
+    
+    /**
+     * Cleanup method to prevent memory leaks
+     * This should be called when the rule is no longer needed
+     */
+    public void cleanup() {
+        accountStates.clear();
     }
 }

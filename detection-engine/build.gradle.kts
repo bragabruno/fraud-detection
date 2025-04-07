@@ -1,6 +1,5 @@
 plugins {
     id("buildlogic.java-library-conventions")
-    id("io.spring.dependency-management") version "1.1.4"
 }
 
 group = "com.bragdev.fraud"
@@ -10,31 +9,31 @@ dependencies {
     implementation(project(":core"))
     
     // Machine Learning Libraries
-    implementation("org.tensorflow:tensorflow-core-platform:0.5.0")
-    implementation("org.deeplearning4j:deeplearning4j-core:1.0.0-M1.1")
-    implementation("org.nd4j:nd4j-native-platform:1.0.0-M1.1")
+    implementation(libs.tensorflow.core.platform)
+    implementation(libs.deeplearning4j.core)
+    implementation(libs.nd4j.native.platform)
     
     // Statistics and Math
-    implementation("org.apache.commons:commons-math3:3.6.1")
-    implementation("com.github.haifengl:smile-core:2.6.0")
+    implementation(libs.commons.math3)
+    implementation(libs.smile.core)
     
     // Graph Database
-    implementation("org.neo4j:neo4j-ogm-core:4.0.5")
-    implementation("org.neo4j:neo4j-ogm-bolt-driver:4.0.5")
+    implementation(libs.neo4j.ogm.core)
+    implementation(libs.neo4j.ogm.bolt.driver)
     
     // Spring
-    implementation("org.springframework.boot:spring-boot-starter:3.2.4")
+    implementation(libs.spring.boot.starter)
     
     // Lombok
-    compileOnly("org.projectlombok:lombok:1.18.30")
-    annotationProcessor("org.projectlombok:lombok:1.18.30")
+    compileOnly(libs.lombok)
+    annotationProcessor(libs.lombok)
     
     // Testing
-    testCompileOnly("org.projectlombok:lombok:1.18.30")
-    testAnnotationProcessor("org.projectlombok:lombok:1.18.30")
-    testImplementation("org.junit.jupiter:junit-jupiter:5.11.3")
-    testImplementation("org.mockito:mockito-core:5.10.0")
-    testImplementation("org.springframework.boot:spring-boot-starter-test:3.2.4")
+    testCompileOnly(libs.lombok)
+    testAnnotationProcessor(libs.lombok)
+    testImplementation(libs.junit.jupiter)
+    testImplementation(libs.mockito.core)
+    testImplementation(libs.spring.boot.starter.test)
 }
 
 tasks.withType<JavaCompile> {

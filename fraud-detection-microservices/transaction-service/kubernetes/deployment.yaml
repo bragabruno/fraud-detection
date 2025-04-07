@@ -1,0 +1,99 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: transaction-service
+  labels:
+    app: transaction-service
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: transaction-service
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
+  template:
+    metadata:
+      labels:
+        app: transaction-service
+    spec:
+      containers:
+      - name: transaction-service
+        image: transaction-service:latest
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: 8081
+        resources:
+          requests:
+            cpu: 500m
+            memory: 512Mi
+          limits:
+            cpu: 1000m
+            memory: 1Gi
+        readinessProbe:
+          httpGet:
+            path: /actuator/health
+            port: 8081
+          initialDelaySeconds: 60
+          periodSeconds: 15
+          timeoutSeconds: 3
+        livenessProbe:
+          httpGet:
+            path: /actuator/health
+            port: 8081
+          initialDelaySeconds: 90
+          periodSeconds: 30
+          timeoutSeconds: 3
+        env:
+        - name: SPRING_PROFILES_ACTIVE
+          value: "kubernetes"
+        - name: SPRING_DATASOURCE_URL
+          value: "jdbc:postgresql://postgres:5432/transaction_service"
+        - name: SPRING_DATASOURCE_USERNAME
+          valueFrom:
+            secretKeyRef:
+              name: postgres-credentials
+              key: username
+        - name: SPRING_DATASOURCE_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: postgres-credentials
+              key: password
+        - name: SPRING_CLOUD_CONSUL_HOST
+          value: "consul-server"
+        - name: SPRING_CLOUD_CONSUL_PORT
+          value: "8500"
+        - name: SPRING_KAFKA_BOOTSTRAP_SERVERS
+          value: "kafka:9092"
+        - name: JAVA_OPTS
+          value: "-Xms256m -Xmx512m"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: transaction-service
+  labels:
+    app: transaction-service
+spec:
+  type: ClusterIP
+  ports:
+  - port: 80
+    targetPort: 8081
+    protocol: TCP
+    name: http
+  selector:
+    app: transaction-service
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: transaction-service-config
+data:
+  application-kubernetes.properties: |
+    # Kubernetes specific configuration
+    spring.datasource.url=jdbc:postgresql://postgres:5432/transaction_service
+    spring.cloud.consul.host=consul-server
+    spring.cloud.consul.port=8500
+    spring.kafka.bootstrap-servers=kafka:9092
