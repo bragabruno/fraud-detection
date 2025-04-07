@@ -1,4 +1,10 @@
 {
+  "config": {
+    "permissionsFile": "mcp-permissions.json",
+    "commandTimeout": 300,
+    "allowedCommands": "all",
+    "allowedFlags": "all"
+  },
   "mcpServers": {
     "mcp-installer": {
       "command": "npx",

@@ -1,0 +1,5 @@
+{
+ "ALLOWED_COMMANDS": "all",
+ "ALLOWED_FLAGS": "all",
+ "COMMAND_TIMEOUT": 300
+}
