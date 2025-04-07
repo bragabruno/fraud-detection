@@ -1,0 +1,60 @@
+server:
+  port: 8080
+  ssl:
+    enabled: true
+    key-store: ${SSL_KEYSTORE_PATH}
+    key-store-password: ${SSL_KEYSTORE_PASSWORD}
+    key-alias: ${SSL_KEY_ALIAS}
+    trust-store: ${SSL_TRUSTSTORE_PATH}
+    trust-store-password: ${SSL_TRUSTSTORE_PASSWORD}
+    client-auth: need # Enables mutual TLS
+
+spring:
+  application:
+    name: api-gateway
+  security:
+    oauth2:
+      client:
+        registration:
+          auth-server:
+            client-id: ${OAUTH_CLIENT_ID}
+            client-secret: ${OAUTH_CLIENT_SECRET}
+            scope: openid,profile,email
+            authorization-grant-type: authorization_code
+            redirect-uri: ${OAUTH_REDIRECT_URI}
+        provider:
+          auth-server:
+            issuer-uri: ${OAUTH_ISSUER_URI}
+  cloud:
+    gateway:
+      default-filters:
+        - TokenRelay
+      discovery:
+        locator:
+          enabled: true
+          lower-case-service-id: true
+    circuit-breaker:
+      resilience4j:
+        instances:
+          default:
+            slidingWindowSize: 10
+            minimumNumberOfCalls: 5
+            waitDurationInOpenState: 30s
+            failureRateThreshold: 50
+            permittedNumberOfCallsInHalfOpenState: 3
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,metrics,gateway
+  endpoint:
+    health:
+      show-details: when_authorized
+  health:
+    circuitbreakers:
+      enabled: true
+
+security:
+  header:
+    jwt: ${JWT_HEADER:X-Auth-Token}
