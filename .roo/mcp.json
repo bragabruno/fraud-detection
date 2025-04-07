@@ -11,6 +11,10 @@
       "args": [
         "-y",
         "@anaisbetts/mcp-installer"
+      ],
+      "alwaysAllow": [
+        "install_repo_mcp_server",
+        "install_local_mcp_server"
       ]
     },
     "mcp-obsidian": {
@@ -19,6 +23,10 @@
         "-y",
         "mcp-obsidian",
         "/Users/brunobraga/Library/Mobile Documents/iCloud~md~obsidian/Documents/Obsidian Vault"
+      ],
+      "alwaysAllow": [
+        "read_notes",
+        "search_notes"
       ]
     },
     "filesystem": {
@@ -27,6 +35,19 @@
         "-y",
         "@modelcontextprotocol/server-filesystem",
         "/Users/brunobraga/"
+      ],
+      "alwaysAllow": [
+        "read_file",
+        "read_multiple_files",
+        "write_file",
+        "edit_file",
+        "create_directory",
+        "list_directory",
+        "directory_tree",
+        "move_file",
+        "search_files",
+        "get_file_info",
+        "list_allowed_directories"
       ]
     },
     "github": {
@@ -37,7 +58,35 @@
       ],
       "env": {
         "GITHUB_PERSONAL_ACCESS_TOKEN": "GITHUB_PERSONAL_ACCESS_TOKEN"
-      }
+      },
+      "alwaysAllow": [
+        "create_or_update_file",
+        "search_repositories",
+        "create_repository",
+        "get_file_contents",
+        "push_files",
+        "create_issue",
+        "create_pull_request",
+        "fork_repository",
+        "create_branch",
+        "list_commits",
+        "list_issues",
+        "update_issue",
+        "add_issue_comment",
+        "search_code",
+        "search_issues",
+        "search_users",
+        "get_issue",
+        "get_pull_request",
+        "list_pull_requests",
+        "create_pull_request_review",
+        "merge_pull_request",
+        "get_pull_request_files",
+        "get_pull_request_status",
+        "update_pull_request_branch",
+        "get_pull_request_comments",
+        "get_pull_request_reviews"
+      ]
     },
     "postgres": {
       "command": "npx",
@@ -45,6 +94,9 @@
         "-y",
         "@modelcontextprotocol/server-postgres",
         "postgresql://claude_user:T5+K+5iF3tTKLf6!op0ddXGaAmVS^tem@localhost:5432/claude_db"
+      ],
+      "alwaysAllow": [
+        "query"
       ]
     },
     "sequential-thinking": {
@@ -52,6 +104,9 @@
       "args": [
         "-y",
         "@modelcontextprotocol/server-sequential-thinking"
+      ],
+      "alwaysAllow": [
+        "sequentialthinking"
       ]
     },
     "memory": {
@@ -59,6 +114,17 @@
       "args": [
         "-y",
         "@modelcontextprotocol/server-memory"
+      ],
+      "alwaysAllow": [
+        "create_entities",
+        "create_relations",
+        "add_observations",
+        "delete_entities",
+        "delete_observations",
+        "search_nodes",
+        "read_graph",
+        "delete_relations",
+        "open_nodes"
       ]
     },
     "git": {
@@ -71,6 +137,19 @@
         "/Users/brunobraga/Developer/dev/Vest-Social/vest-backend-api",
         "--repository",
         "/Users/brunobraga/Developer/dev/Vest-Social/vest-cloud"
+      ],
+      "alwaysAllow": [
+        "git_status",
+        "git_diff_unstaged",
+        "git_diff_staged",
+        "git_diff",
+        "git_commit",
+        "git_log",
+        "git_reset",
+        "git_add",
+        "git_create_branch",
+        "git_show",
+        "git_checkout"
       ]
     },
     "slack": {
@@ -89,7 +168,11 @@
       ],
       "env": {
         "BRAVE_API_KEY": "BSAPTzlvw0sYrRZ-sf3nk2CjVjXrCXS"
-      }
+      },
+      "alwaysAllow": [
+        "brave_web_search",
+        "brave_local_search"
+      ]
     },
     "exa": {
       "command": "npx",
@@ -107,6 +190,10 @@
         "-y",
         "@mcp-get-community/server-macos",
         "/Users/brunobraga"
+      ],
+      "alwaysAllow": [
+        "systemInfo",
+        "sendNotification"
       ]
     },
     "mcp-transform-paths": {
