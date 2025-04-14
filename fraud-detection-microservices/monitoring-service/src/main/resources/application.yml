@@ -1,0 +1,55 @@
+spring:
+  application:
+    name: monitoring-service
+
+server:
+  port: ${SERVER_PORT:8090}
+
+eureka:
+  client:
+    service-url:
+      defaultZone: ${EUREKA_URL:http://localhost:8761/eureka}
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,metrics,prometheus,info
+  endpoint:
+    health:
+      show-details: always
+    metrics:
+      enabled: true
+    prometheus:
+      enabled: true
+  metrics:
+    export:
+      prometheus:
+        enabled: true
+    tags:
+      application: ${spring.application.name}
+    distribution:
+      percentiles-histogram:
+        http.server.requests: true
+
+opentracing:
+  jaeger:
+    service-name: ${spring.application.name}
+    udp-sender:
+      host: ${JAEGER_HOST:localhost}
+      port: ${JAEGER_PORT:6831}
+    enabled: ${JAEGER_ENABLED:true}
+    log-spans: ${JAEGER_LOG_SPANS:true}
+
+logging:
+  pattern:
+    console: '%d{yyyy-MM-dd HH:mm:ss} [%thread] [trace_id=%X{traceId}] %-5level %logger{36} - %msg%n'
+  level:
+    root: INFO
+    com.frauddetection: DEBUG
+    org.springframework.web: INFO
+
+prometheus:
+  scrape:
+    endpoint: /actuator/prometheus
+    interval: 5s

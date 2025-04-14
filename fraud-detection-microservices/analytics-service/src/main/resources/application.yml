@@ -1,0 +1,48 @@
+spring:
+  application:
+    name: analytics-service
+  datasource:
+    url: jdbc:postgresql://${DB_HOST:localhost}:${DB_PORT:5432}/${DB_NAME:fraud_analytics}
+    username: ${DB_USER:postgres}
+    password: ${DB_PASSWORD:postgres}
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+
+server:
+  port: ${SERVER_PORT:8085}
+
+eureka:
+  client:
+    service-url:
+      defaultZone: ${EUREKA_URL:http://localhost:8761/eureka}
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,metrics,prometheus
+  metrics:
+    export:
+      prometheus:
+        enabled: true
+
+opentracing:
+  jaeger:
+    service-name: ${spring.application.name}
+    udp-sender:
+      host: ${JAEGER_HOST:localhost}
+      port: ${JAEGER_PORT:6831}
+    enabled: ${JAEGER_ENABLED:true}
+    log-spans: ${JAEGER_LOG_SPANS:true}
+
+logging:
+  pattern:
+    console: '%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n'
+  level:
+    root: INFO
+    com.frauddetection: DEBUG
+    org.springframework.web: INFO
