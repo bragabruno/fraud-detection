@@ -13,7 +13,7 @@ function create_user_and_database() {
         echo "Error: Database name cannot be empty"
         return 1
     fi
-    
+
     echo "  Creating database '$database'"
     if psql -v ON_ERROR_STOP=1 --username "$POSTGRES_USER" -lqt | cut -d \| -f 1 | grep -qw "$database"; then
         echo "  Database '$database' already exists, skipping..."

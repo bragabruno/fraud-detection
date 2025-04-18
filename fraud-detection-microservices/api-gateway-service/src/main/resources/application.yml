@@ -29,10 +29,28 @@ spring:
     gateway:
       default-filters:
         - TokenRelay
+        - name: RequestRateLimiter
+          args:
+            redis-rate-limiter.replenishRate: 10
+            redis-rate-limiter.burstCapacity: 20
+            redis-rate-limiter.requestedTokens: 1
       discovery:
         locator:
           enabled: true
           lower-case-service-id: true
+  data:
+    redis:
+      host: ${REDIS_HOST:localhost}
+      port: ${REDIS_PORT:6379}
+  
+  # Basic auth fallback configuration
+  security:
+    basic:
+      enabled: true
+      users:
+        - username: ${API_USER:api-client}
+          password: ${API_PASSWORD:changeme}
+          roles: API_USER
     circuit-breaker:
       resilience4j:
         instances:

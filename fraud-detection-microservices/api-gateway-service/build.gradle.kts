@@ -18,6 +18,8 @@ repositories {
 extra["springCloudVersion"] = "2022.0.4"
 
 dependencies {
+    // Redis for rate limiting
+    implementation("org.springframework.boot:spring-boot-starter-data-redis")
     // Spring Cloud Gateway
     implementation("org.springframework.cloud:spring-cloud-starter-gateway")
     

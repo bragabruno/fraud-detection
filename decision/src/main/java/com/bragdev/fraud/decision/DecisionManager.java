@@ -1,9 +1,15 @@
 package com.bragdev.fraud.decision;
 
 import java.time.Instant;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import java.util.concurrent.ConcurrentLinkedQueue;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import com.bragdev.fraud.core.model.RiskLevel;
 import com.bragdev.fraud.core.model.RiskScore;
@@ -13,14 +19,25 @@ import com.bragdev.fraud.core.model.Transaction;
  * Decision Manager responsible for combining risk scores from different detection methods
  * and making final fraud/non-fraud decisions.
  */
+@Service
 public class DecisionManager {
 
+    @Autowired
+    private StatisticalAnalysisService statisticalAnalysisService;
+    
+    @Autowired
+    private MLModelIntegrationService mlModelService;
+    
+    // Sliding window for statistical analysis
+    private final ConcurrentLinkedQueue<Double> transactionScores = new ConcurrentLinkedQueue<>();
+    private static final int WINDOW_SIZE = 1000;
+    
     // Configuration for risk thresholds
     private double lowRiskThreshold = 20.0;
     private double mediumRiskThreshold = 50.0;
     private double highRiskThreshold = 80.0;
     
-    // Weights for different detection methods
+    // Weights for different detection methods with configurable values
     private final Map<String, Double> methodWeights = new HashMap<>();
     
     /**
@@ -70,25 +87,25 @@ public class DecisionManager {
             throw new IllegalArgumentException("Transaction and scores cannot be null or empty");
         }
         
+        // Get ML model prediction
+        double mlPrediction = mlModelService.predictRisk(transaction);
+        scores.put("MACHINE_LEARNING", createRiskScore(transaction.getId(), mlPrediction));
+        
         // Calculate weighted average score
-        double overallScore = 0.0;
-        double totalWeight = 0.0;
+        double overallScore = calculateWeightedScore(scores);
         
-        for (Map.Entry<String, RiskScore> entry : scores.entrySet()) {
-            String methodName = entry.getKey();
-            RiskScore score = entry.getValue();
-            
-            if (score != null) {
-                double weight = methodWeights.getOrDefault(methodName, 0.1);
-                overallScore += score.getOverallScore() * weight;
-                totalWeight += weight;
-            }
-        }
+        // Add to statistical window
+        updateStatisticalWindow(overallScore);
         
-        // Normalize the overall score
-        if (totalWeight > 0) {
-            overallScore /= totalWeight;
-        }
+        // Get statistical anomaly score
+        double statisticalScore = statisticalAnalysisService.calculateAnomalyScore(
+            transactionScores.stream().mapToDouble(Double::doubleValue).toArray(),
+            overallScore
+        );
+        scores.put("STATISTICAL", createRiskScore(transaction.getId(), statisticalScore));
+        
+        // Recalculate final score including statistical analysis
+        overallScore = calculateWeightedScore(scores);
         
         // Create the final risk score
         RiskScore finalScore = new RiskScore();
@@ -142,5 +159,39 @@ public class DecisionManager {
         this.lowRiskThreshold = lowRiskThreshold;
         this.mediumRiskThreshold = mediumRiskThreshold;
         this.highRiskThreshold = highRiskThreshold;
+    }
+    
+    private void updateStatisticalWindow(double score) {
+        transactionScores.offer(score);
+        while (transactionScores.size() > WINDOW_SIZE) {
+            transactionScores.poll();
+        }
+    }
+    
+    private double calculateWeightedScore(Map<String, RiskScore> scores) {
+        double overallScore = 0.0;
+        double totalWeight = 0.0;
+        
+        for (Map.Entry<String, RiskScore> entry : scores.entrySet()) {
+            String methodName = entry.getKey();
+            RiskScore score = entry.getValue();
+            
+            if (score != null) {
+                double weight = methodWeights.getOrDefault(methodName, 0.1);
+                overallScore += score.getOverallScore() * weight;
+                totalWeight += weight;
+            }
+        }
+        
+        return totalWeight > 0 ? overallScore / totalWeight : 0.0;
+    }
+    
+    private RiskScore createRiskScore(UUID transactionId, double score) {
+        RiskScore riskScore = new RiskScore();
+        riskScore.setId(UUID.randomUUID());
+        riskScore.setTransactionId(transactionId);
+        riskScore.setOverallScore(score);
+        riskScore.setEvaluatedAt(Instant.now());
+        return riskScore;
     }
 }
