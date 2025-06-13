@@ -65,19 +65,19 @@ The system will be a robust, scalable financial transaction fraud detection plat
 
 ```mermaid
 %%{init: {
-  "theme": "default",
+  "theme": "dark",
   "themeVariables": {
-    "primaryColor": "transparent",
-    "primaryTextColor": "#333333",
+    "primaryColor": "#333333",
+    "primaryTextColor": "#dddddd",
     "primaryBorderColor": "#444444",
     "lineColor": "#999999",
-    "secondaryColor": "transparent",
-    "tertiaryColor": "transparent",
-    "mainBkg": "transparent",
+    "secondaryColor": "#222222",
+    "tertiaryColor": "#191919",
+    "mainBkg": "#333333",
     "nodeBorder": "#555555",
-    "clusterBkg": "transparent",
+    "clusterBkg": "#222222",
     "clusterBorder": "#444444",
-    "textColor": "#333333"
+    "textColor": "#dddddd"
   },
   "flowchart": {
     "curve": "basis",
@@ -85,9 +85,6 @@ The system will be a robust, scalable financial transaction fraud detection plat
   }
 }}%%
 flowchart TD
-    classDef default fill:transparent,stroke:#555555,color:#333333
-    classDef subgraphStyle fill:transparent,stroke:#444444,color:#333333
-
     subgraph DataSources["Data Sources"]
         CBS[Core Banking Systems]
         CP[Customer Profiles]

@@ -20,7 +20,7 @@ This module integrates Plaid's financial data APIs with the fraud detection syst
 
 Set the following environment variables or update `application.properties`:
 
-```
+```properties
 PLAID_CLIENT_ID=your_client_id
 PLAID_SECRET=your_secret
 ```
@@ -31,9 +31,9 @@ Additional configuration options in `application.properties`:
 # Plaid API configuration
 plaid.client-id=${PLAID_CLIENT_ID:your_client_id_here}
 plaid.secret=${PLAID_SECRET:your_secret_here}
-plaid.environment=sandbox       # Options: sandbox, development, production
+plaid.environment=sandbox # Options: sandbox, development, production
 plaid.client-name=Fraud Detection System
-plaid.country-codes=US          # Comma-separated list for multiple countries
+plaid.country-codes=US # Comma-separated list for multiple countries
 plaid.language=en
 ```
 
@@ -43,7 +43,7 @@ plaid.language=en
 
 A Link token is required to initialize Plaid Link, which is used to securely connect to bank accounts:
 
-```
+```bash
 POST /api/plaid/create-link-token?userId=user123
 ```
 
@@ -51,7 +51,7 @@ POST /api/plaid/create-link-token?userId=user123
 
 After completing the Link flow, exchange the public token for an access token:
 
-```
+```bash
 POST /api/plaid/exchange-token?publicToken=public-token-from-plaid
 ```
 
@@ -59,7 +59,7 @@ POST /api/plaid/exchange-token?publicToken=public-token-from-plaid
 
 Get account information for connected accounts:
 
-```
+```bash
 GET /api/plaid/accounts?accessToken=access-token
 ```
 
@@ -67,7 +67,7 @@ GET /api/plaid/accounts?accessToken=access-token
 
 Get transactions for a specific date range:
 
-```
+```bash
 GET /api/plaid/transactions?accessToken=access-token&startDate=2023-01-01&endDate=2023-01-31
 ```
 
@@ -75,7 +75,7 @@ GET /api/plaid/transactions?accessToken=access-token&startDate=2023-01-01&endDat
 
 Analyze transactions for fraud detection:
 
-```
+```bash
 GET /api/plaid/fraud-analysis/transactions?accessToken=access-token&startDate=2023-01-01&endDate=2023-01-31
 ```
 
